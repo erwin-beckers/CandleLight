@@ -17,6 +17,7 @@ input bool   DrawPinBars               = true;
 input bool   DrawInsideBars            = true;
 input bool   DrawDoubleBarReversal     = true;
 input bool   DrawTrippleBarReversal    = false;
+input bool   DrawReversalBars          = true;
 input bool   DrawFakey                 = true;
 input bool   DrawDoji                  = false;
 input int    PipsMargin                = 5;
@@ -29,7 +30,7 @@ input bool   SwingHiLoFilterEnabled    = true;
 input int    SwingHighLowBars          = 5;
 
 input string __srfilter__              = "------ Support/Resistance filter ------"; 
-input bool   SRFilterEnabled           = true;
+input bool   UseSRFilter               = false;
 input int    PipsFromSRMargin          = 10;
 
 bool     refresh=false;
@@ -279,6 +280,36 @@ bool IsInsideBar(int bar)
 }
 
 //+------------------------------------------------------------------+
+bool IsReversalBar(int bar)
+{
+   if (IsUp(bar) && !IsUp(bar+1))
+   {
+      double bodySize = MathAbs(Open[bar+1] - Close[bar+1]);
+      double half = Close[bar+1] + bodySize * 0.5;
+      if (Close[bar] > half)
+      {
+         if (Low[bar] < Low[bar+1])
+         {
+            return true;
+         }
+      }
+   }
+   else if (!IsUp(bar) && IsUp(bar+1))
+   {
+      double bodySize = MathAbs(Open[bar+1] - Close[bar+1]);
+      double half     = Close[bar+1] - bodySize * 0.5;
+      if (Close[bar] < half)
+      {
+         if (High[bar] > High[bar+1])
+         {
+            return true;
+         }
+      }
+   }
+   return false;
+}
+
+//+------------------------------------------------------------------+
 bool IsFakeyPinbar(int bar)
 {
    if (IsPinBar(bar+2)) return false;
@@ -364,9 +395,10 @@ void OnBar(int bar)
    bool isTrippleReversal= DrawTrippleBarReversal && IsTrippleReversal(bar);
    bool isFakeyPinbar    = DrawFakey && IsFakeyPinbar(bar);
    bool isFakeyTwoBars   = DrawFakey && IsFakeyTwoBars(bar);
+   bool isReversalBar    = DrawReversalBars && IsReversalBar(bar);
    bool crossedSR        = DoesCrossSRLine(bar);
    
-   if (!isPinBar && !isInsideBar && !isDoubleReversal && !isFakeyPinbar && !isFakeyTwoBars && !isDoji && !isTrippleReversal) 
+   if (!isPinBar && !isInsideBar && !isDoubleReversal && !isFakeyPinbar && !isFakeyTwoBars && !isDoji && !isTrippleReversal && !isReversalBar) 
    {
      return;
    }
@@ -389,7 +421,7 @@ void OnBar(int bar)
       {
          return;
       }
-      if (SRFilterEnabled && !crossedSR)
+      if (UseSRFilter && !crossedSR)
       {
          return;
       }
@@ -403,7 +435,7 @@ void OnBar(int bar)
    {
       clr = clrGold;
       key += " 3 bar Reversal";
-      if (SRFilterEnabled && !crossedSR)
+      if (UseSRFilter && !crossedSR)
       {
          return;
       }
@@ -412,7 +444,7 @@ void OnBar(int bar)
    {
       clr = clrGold;
       key += " 2 bar Reversal";
-      if (SRFilterEnabled && !crossedSR)
+      if (UseSRFilter && !crossedSR)
       {
          return;
       }
@@ -420,7 +452,7 @@ void OnBar(int bar)
    else if (isFakeyPinbar)
    {
       key += " Fakey (Pinbar)";
-      if (SRFilterEnabled && !crossedSR)
+      if (UseSRFilter && !crossedSR)
       {
          return;
       }
@@ -428,11 +460,28 @@ void OnBar(int bar)
    else if (isFakeyTwoBars)
    {
       key += " Fakey (Two bars)";
-      if (SRFilterEnabled && !crossedSR)
+      if (UseSRFilter && !crossedSR)
       {
          return;
       }
    }
+   else if (isReversalBar) 
+   {
+      clr = Yellow;
+      key += " Reversal";
+      if (BarSizeFilterEnabled && !SizeFilter(bar))
+      {
+         return;
+      }
+      if (SwingHiLoFilterEnabled && !HiLoFilter(bar))
+      {
+         return;
+      }
+      if (UseSRFilter && !crossedSR)
+      {
+         return;
+      }
+   } 
    else 
    {
       clr = clrAliceBlue;
