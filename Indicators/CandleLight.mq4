@@ -117,11 +117,6 @@ int start()
    
    double mult = (Digits==3 || Digits==5) ? 10.0:1.0;
    Comment("Spread:", DoubleToStr(MathAbs(Ask-Bid) / (Point()*mult), 2)+" pips. Next candle in: "+displaystr);
-   datetime currentTime = TimeCurrent();
-   if (TimeHour(currentTime) != TimeHour(_prevTime))
-   {
-       _refresh = true;
-   }
    return 0;
 }
 
@@ -132,8 +127,8 @@ void Update(bool sendAlerts)
    if (_refresh)
    {
       Print("Update:");
-     _prevTime = TimeCurrent();
-      refresh  = false;
+      _prevTime = TimeCurrent();
+      _refresh  = false;
       ClearAll();
       int bars = MathMin(MaxBarsHistory, Bars(Symbol(), 0)); 
       for (int bar=1; bar < bars; bar++)
