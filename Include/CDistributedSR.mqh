@@ -52,7 +52,7 @@ private:
       string url    = "https://www.erwinbeckers.nl/sr/" + key + ".txt";
       string httpResult = "";
       
-      if (Symbol() == _symbol) Print(Symbol(), " grab:", url);
+      //if (Symbol() == _symbol) Print(Symbol(), " grab:", url);
       if (!_http.GrabWeb(url, httpResult))
       {
          // maybe there is no network connection ?
@@ -61,7 +61,7 @@ private:
        
       string lines[]; 
       int lineCount = StringSplit(httpResult, 10,lines);
-      if (Symbol() == _symbol) Print(Symbol(), "  lines:", lineCount);
+      //if (Symbol() == _symbol) Print(Symbol(), "  lines:", lineCount);
       for (int i=0; i < lineCount;++i)
       {
          string priceTxt = lines[i];
@@ -75,13 +75,13 @@ private:
          {
             priceTxt = StringSubstr(priceTxt, 1);
             double price= StringToDouble(priceTxt);
-            if (Symbol() == _symbol) Print(Symbol(), "  add D1:", price);
+            //if (Symbol() == _symbol) Print(Symbol(), "  add D1:", price);
             _srLevelsD1[_levelCountD1++] = price;
          }
          else
          {
             double price= StringToDouble(priceTxt);
-            if (Symbol() == _symbol) Print(Symbol(), "  add W1:", price);
+            //if (Symbol() == _symbol) Print(Symbol(), "  add W1:", price);
             _srLevelsW1[_levelCountW1++] = price;
          }
       }
@@ -91,7 +91,7 @@ public:
    //----------------------------------------------------------------------
    void DrawSR()
    {
-      Print(_symbol, "sr: draw w:",_levelCountW1," d:",_levelCountD1);
+      //Print(_symbol, "sr: draw w:",_levelCountW1," d:",_levelCountD1);
       Clear();
       
       // weekly levels

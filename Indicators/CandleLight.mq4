@@ -18,11 +18,13 @@ input int    MaxBarsHistory = 100;
 CPatternDetector* _detector;
 int               _prevDay;
 int               _prevHour;
+bool              _refresh;
 
 //+------------------------------------------------------------------+
 void SendAlert(string symbol, string period, string pattern )
 {
-   string alert = symbol + " " + period+ " "+ pattern;
+   string alert = symbol + " " + period + " " + pattern;
+   Print("alert:", alert);
    if (GlobalVariableCheck(alert)) return;
    GlobalVariableSet(alert,1);
    
@@ -118,18 +120,20 @@ int start()
    datetime currentTime = TimeCurrent();
    if (TimeHour(currentTime) != TimeHour(_prevTime))
    {
-       refresh = true;
+       _refresh = true;
    }
    return 0;
 }
 
+
 //+------------------------------------------------------------------+
-void OnTimer()
+void Update(bool sendAlerts)
 {
-   if (refresh)
+   if (_refresh)
    {
+      Print("Update:");
      _prevTime = TimeCurrent();
-      refresh = false;
+      refresh  = false;
       ClearAll();
       int bars = MathMin(MaxBarsHistory, Bars(Symbol(), 0)); 
       for (int bar=1; bar < bars; bar++)
@@ -138,58 +142,74 @@ void OnTimer()
       }
       _detector.DrawSR();
       
-      // detect daily signals
-      int day = TimeDayOfYear(TimeCurrent());
-      if (day != _prevDay)
+      if (sendAlerts)
       {
-        _prevDay = day;
-         for (int i=0; i <  SymbolsTotal(true); ++i)
+         Print("check alerts");
+         // detect daily signals
+         int day = TimeDayOfYear(TimeCurrent());
+         if (day != _prevDay)
          {
-            string symbol = SymbolName(i, true);
-            string patternName;
-            
-            if (_detector.PassesFilter(symbol, PERIOD_D1, 1)) 
+           Print("  check alerts D1");
+           _prevDay = day;
+            for (int i=0; i <  SymbolsTotal(true); ++i)
             {
-               if (_detector.IsValidPattern(symbol, PERIOD_D1, 1, patternName))
+               string symbol = SymbolName(i, true);
+               string patternName;
+               
+               if (_detector.PassesFilter(symbol, PERIOD_D1, 1)) 
                {
-                  SendAlert(symbol, "D1", patternName + " " +iTime(symbol, PERIOD_D1, 1));
+                  if (_detector.IsValidPattern(symbol, PERIOD_D1, 1, patternName))
+                  {
+                     SendAlert(symbol, "D1", patternName + " " +iTime(symbol, PERIOD_D1, 1));
+                  }
                }
             }
          }
-      }
       
-      // detect h4 signals
-      int hour = TimeHour(TimeCurrent());
-      if (hour != _prevHour)
-      {
-         _prevHour = hour;
-         
-         for (int i=0; i <  SymbolsTotal(true); ++i)
+         // detect h4 signals
+         int hour = TimeHour(TimeCurrent());
+         if (hour != _prevHour)
          {
-            string symbol = SymbolName(i, true);
-            string patternName;
+            Print("  check alerts H4");
+            _prevHour = hour;
             
-            if (_detector.PassesFilter(symbol, PERIOD_H4, 1)) 
+            for (int i=0; i <  SymbolsTotal(true); ++i)
             {
-               if (_detector.IsValidPattern(symbol, PERIOD_H4, 1, patternName))
+               string symbol = SymbolName(i, true);
+               string patternName;
+               
+               if (_detector.PassesFilter(symbol, PERIOD_H4, 1)) 
                {
-                  SendAlert(symbol, "H4", patternName+ " " +iTime(symbol, PERIOD_H4, 1));
+                  if (_detector.IsValidPattern(symbol, PERIOD_H4, 1, patternName))
+                  {
+                     SendAlert(symbol, "H4", patternName+ " " +iTime(symbol, PERIOD_H4, 1));
+                  }
                }
             }
-         }
+          }
        }
    }
+}
+
+//+------------------------------------------------------------------+
+void OnTimer()
+{
+   Update(true);
 }
 
 
 //+------------------------------------------------------------------+
 int init()
 {   
-   _prevTime = 0;
-   refresh   = true;
+   _prevTime  = 0;
+   _refresh   = true;
    _detector = new CPatternDetector();
    ClearAll();
-   EventSetTimer(1);
+   Update(false);
+   
+   _prevTime  = 0;
+   _refresh   = true;
+   EventSetTimer(5);
    return(INIT_SUCCEEDED);
 }
 
@@ -210,7 +230,7 @@ void OnChartEvent(const int id,         // Event ID
    { 
      if (StringSubstr(sparam, 0, 1) != "_")
      {
-       refresh = true;
+       _refresh = true;
      }
    }
 }

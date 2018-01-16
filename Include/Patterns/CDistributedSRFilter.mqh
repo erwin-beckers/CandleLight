@@ -107,10 +107,10 @@ public:
    {
       for (int i=0; i < _pairCount; ++i)
       {
-         Print("p:",i," ", _pairs[i]._symbol);
+         //Print("p:",i," ", _pairs[i]._symbol);
          if (_pairs[i]._symbol == Symbol())
          {
-            Print("  draw:",i," ", _pairs[i]._symbol);
+            //Print("  draw:",i," ", _pairs[i]._symbol);
             _pairs[i].Draw();
          }
       }
