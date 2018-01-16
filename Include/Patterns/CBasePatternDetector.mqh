@@ -11,32 +11,33 @@
 class CBasePatternDetector : public IPatternDetector
 {
 protected:   
-   int _period;
+   int    _period;
+   string _symbol;
    
    //+------------------------------------------------------------------+
    bool IsUp(int bar)
    {
-     return iClose(Symbol(), _period, bar) >= iOpen(Symbol(), _period, bar);
+     return iClose(_symbol, _period, bar) >= iOpen(_symbol, _period, bar);
    }
    
    //+------------------------------------------------------------------+
    double UpperWick(int bar)
    {
-      double upperBody = MathMax(iClose(Symbol(), _period, bar), iOpen(Symbol(), _period, bar));
-      return iHigh(Symbol(), _period, bar) - upperBody;
+      double upperBody = MathMax(iClose(_symbol, _period, bar), iOpen(_symbol, _period, bar));
+      return iHigh(_symbol, _period, bar) - upperBody;
    }
    
    //+------------------------------------------------------------------+
    double LowerWick(int bar)
    {
-      double lowerBody = MathMin(iClose(Symbol(), _period, bar), iOpen(Symbol(), _period, bar));
-      return lowerBody - iLow(Symbol(), _period, bar);
+      double lowerBody = MathMin(iClose(_symbol, _period, bar), iOpen(_symbol, _period, bar));
+      return lowerBody - iLow(_symbol, _period, bar);
    }
    
    //+------------------------------------------------------------------+
    double CandleRange(int bar)
    {
-      return MathAbs(iClose(Symbol(), _period, bar) - iOpen(Symbol(), _period, bar));
+      return MathAbs(iClose(_symbol, _period, bar) - iOpen(_symbol, _period, bar));
    }
    
    
@@ -50,12 +51,12 @@ protected:
      {
         if (upperWick > lowerWick)
         {
-          if (iHigh(Symbol(), _period, bar+i) < iHigh(Symbol(), _period, bar)) cnt++;
+          if (iHigh(_symbol, _period, bar+i) < iHigh(_symbol, _period, bar)) cnt++;
           else break;
         }
         else
         {
-          if (iLow(Symbol(), _period, bar+i) > iLow(Symbol(), _period, bar)) cnt++;
+          if (iLow(_symbol, _period, bar+i) > iLow(_symbol, _period, bar)) cnt++;
           else break;
         }
      }
@@ -81,14 +82,15 @@ protected:
    
 public: 
    //+------------------------------------------------------------------+
-   CBasePatternDetector(int period)
+   CBasePatternDetector()
    {
-      _period = period;
    }
    
    //+------------------------------------------------------------------+
-   virtual bool IsValid(int bar)
+   virtual bool IsValid(string symbol, int period, int bar)
    {
+      _symbol = symbol;
+      _period = period;
       return false;
    }
    

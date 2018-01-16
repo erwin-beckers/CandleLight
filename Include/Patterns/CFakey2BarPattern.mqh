@@ -16,13 +16,15 @@ private:
    
 public:
    //+------------------------------------------------------------------+
-   CFakey2BarPattern(int period) : CBasePatternDetector(period)
+   CFakey2BarPattern()
    {
    }
 
    //+------------------------------------------------------------------+
-   bool IsValid(int bar)
+   bool IsValid(string symbol,int period, int bar)
    {
+      _symbol = symbol;
+      _period = period;
       if (IsPinBar(bar+3)) return false;
       if (IsPinBar(bar+2)) return false;
       if (IsPinBar(bar+1)) return false;
@@ -36,20 +38,20 @@ public:
          bool isUp0 = IsUp(bar);
          if (isUp3 == isUp0 && isUp2 == isUp1)
          {
-            if (iHigh(Symbol(), _period, bar+1) < iHigh(Symbol(), _period, bar+2) && iHigh(Symbol(), _period, bar+1) < iHigh(Symbol(), _period, bar+3))
+            if (iHigh(_symbol, _period, bar+1) < iHigh(_symbol, _period, bar+2) && iHigh(_symbol, _period, bar+1) < iHigh(_symbol, _period, bar+3))
             {
-               if ( iLow(Symbol(), _period, bar) > iHigh(Symbol(), _period, bar+1) && iHigh(Symbol(), _period, bar) > iHigh(Symbol(), _period, bar+1))
+               if ( iLow(_symbol, _period, bar) > iHigh(_symbol, _period, bar+1) && iHigh(_symbol, _period, bar) > iHigh(_symbol, _period, bar+1))
                {
-                  Print("found fakey ",bar," ", iTime(Symbol(), _period, bar));
+                  Print("found fakey ",bar," ", iTime(_symbol, _period, bar));
                   return true;
                }
             }
             
-            if (iHigh(Symbol(), _period, bar+1) > iHigh(Symbol(), _period, bar+2) && iHigh(Symbol(), _period, bar+1) > iHigh(Symbol(), _period, bar+3))
+            if (iHigh(_symbol, _period, bar+1) > iHigh(_symbol, _period, bar+2) && iHigh(_symbol, _period, bar+1) > iHigh(_symbol, _period, bar+3))
             {
-               if ( iHigh(Symbol(), _period, bar) < iHigh(Symbol(), _period, bar+1) && iHigh(Symbol(), _period, bar) < iHigh(Symbol(), _period, bar+1))
+               if ( iHigh(_symbol, _period, bar) < iHigh(_symbol, _period, bar+1) && iHigh(_symbol, _period, bar) < iHigh(_symbol, _period, bar+1))
                {
-                  Print("found fakey ",bar," ", iTime(Symbol(), _period, bar));
+                  Print("found fakey ",bar," ", iTime(_symbol, _period, bar));
                   return true;
                }
             }
@@ -62,13 +64,6 @@ public:
    string PatternName()
    {
       return "Fakey 2 bar pattern";
-   }
-   
-   
-   //+------------------------------------------------------------------+
-   int BarCount()
-   {
-      return 4;
    }
 };
 

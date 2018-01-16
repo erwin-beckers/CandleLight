@@ -17,30 +17,36 @@ private:
    
 public:
    //+------------------------------------------------------------------+
-   CDoubleReversalPattern(int period, int pipsMargin) : CBasePatternDetector(period)
+   CDoubleReversalPattern(int pipsMargin) 
    {
       _pipsMargin = pipsMargin;
    }
 
    //+------------------------------------------------------------------+
-   bool IsValid(int bar)
+   bool IsValid(string symbol, int period, int bar)
    {
+      _symbol = symbol;
+      _period = period;
       bool isUp1 = IsUp(bar);
       bool isUp2 = IsUp(bar+1);
       if (isUp1 == isUp2) return false;
+      
+      double points   = MarketInfo(_symbol, MODE_POINT);
+      double digits   = MarketInfo(_symbol, MODE_DIGITS);
+      
       double mult = 1;
-      if (Digits ==3 || Digits==5) mult = 10;
-      double pips = _pipsMargin * mult * Point();
+      if (digits ==3 || digits==5) mult = 10;
+      double pips = _pipsMargin * mult * points;
       
       if (isUp2)
       {
          _patternName = "Bearish double reversal";
-         if ( iLow(Symbol(), _period, bar) < iLow(Symbol(), _period, bar+1) && iHigh(Symbol(), _period, bar) + pips > iHigh(Symbol(), _period, bar+1)) return true;
+         if ( iLow(_symbol, _period, bar) < iLow(_symbol, _period, bar+1) && iHigh(_symbol, _period, bar) + pips > iHigh(_symbol, _period, bar+1)) return true;
       }
       else
       {
          _patternName = "Bullish double reversal";
-         if ( iHigh(Symbol(), _period, bar) > iHigh(Symbol(), _period, bar+1) && iLow(Symbol(), _period, bar) - pips < iLow(Symbol(), _period, bar+1)) return true;
+         if ( iHigh(_symbol, _period, bar) > iHigh(_symbol, _period, bar+1) && iLow(_symbol, _period, bar) - pips < iLow(_symbol, _period, bar+1)) return true;
       }
       return false;
    }

@@ -16,17 +16,26 @@ private:
    double _pips;
 public:
    //+------------------------------------------------------------------+
-   CSRFilter(int period, int pips) : CBasePatternDetector(period)
+   CSRFilter(int pips)
    {
       _pips = pips;
    }
 
    //+------------------------------------------------------------------+
-   bool IsValid(int bar)
+   bool IsValid(string symbol,int period, int bar)
    {
+      _symbol = symbol;
+      _period = period;
+      
+      // chart objects only work for current chart
+      if (Symbol() != _symbol) return true;
+      
+      double points   = MarketInfo(_symbol, MODE_POINT);
+      double digits   = MarketInfo(_symbol, MODE_DIGITS);
+      
       double mult = 1;
-      if (Digits ==3 || Digits==5) mult = 10;
-      double pips = _pips * mult * Point();
+      if (digits ==3 || digits==5) mult = 10;
+      double pips = _pips * mult * points;
       
       for (int i=0;i < ObjectsTotal(0, 0, -1); i++)
       {
@@ -35,13 +44,13 @@ public:
          {
             double srPrice = ObjectGetDouble(0, name, OBJPROP_PRICE,0); 
             
-            if (iLow(Symbol(), _period, bar) - pips <= srPrice)
+            if (iLow(_symbol, _period, bar) - pips <= srPrice)
             {
-              if (iHigh(Symbol(), _period, bar) + pips  >= srPrice) return true;
+              if (iHigh(_symbol, _period, bar) + pips  >= srPrice) return true;
             }
-            if (iHigh(Symbol(), _period, bar) + pips >= srPrice)
+            if (iHigh(_symbol, _period, bar) + pips >= srPrice)
             {
-              if (iLow(Symbol(), _period, bar) - pips  <= srPrice) return true;
+              if (iLow(_symbol, _period, bar) - pips  <= srPrice) return true;
             }
          }
          else if (ObjectType(name) == OBJ_TREND)
@@ -54,10 +63,10 @@ public:
                time1 = time2;
                time2 = dum;
             }
-            if (iTime(Symbol(), _period, bar) > time1 && iTime(Symbol(), _period, bar) <= time2)
+            if (iTime(_symbol, _period, bar) > time1 && iTime(_symbol, _period, bar) <= time2)
             {
                double priceAtTrendline = ObjectGetValueByShift(name, bar);
-               if (iLow(Symbol(), _period, bar) < priceAtTrendline && iHigh(Symbol(), _period, bar) >= priceAtTrendline)
+               if (iLow(_symbol, _period, bar) < priceAtTrendline && iHigh(_symbol, _period, bar) >= priceAtTrendline)
                {  
                   return true;
                }

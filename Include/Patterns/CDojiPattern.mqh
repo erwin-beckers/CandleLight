@@ -15,17 +15,19 @@ private:
    
 public:
    //+------------------------------------------------------------------+
-   CDojiPattern(int period) : CBasePatternDetector(period)
+   CDojiPattern()
    {
    }
 
    //+------------------------------------------------------------------+
-   bool IsValid(int bar)
+   bool IsValid(string symbol, int period, int bar)
    {
-      double body      = MathAbs(iClose(Symbol(), _period, bar) - iOpen(Symbol(), _period, bar));
+      _symbol = symbol;
+      _period = period;
+      double body      = MathAbs(iClose(_symbol, _period, bar) - iOpen(_symbol, _period, bar));
       double lowerWick = LowerWick(bar);
       double upperWick = UpperWick(bar);
-      double range     = iHigh(Symbol(), _period, bar) - iLow(Symbol(), _period, bar);
+      double range     = iHigh(_symbol, _period, bar) - iLow(_symbol, _period, bar);
       double tail      = MathMax(lowerWick, upperWick);
       double nose      = MathMin(lowerWick, upperWick); 
       

@@ -14,13 +14,15 @@ class CCandleSizeFilter : public CBasePatternDetector
    
 public:
    //+------------------------------------------------------------------+
-   CCandleSizeFilter(int period) : CBasePatternDetector(period)
+   CCandleSizeFilter() 
    {
    }
 
    //+------------------------------------------------------------------+
-   bool IsValid(int bar)
+   bool IsValid(string symbol, int period, int bar)
    {
+      _symbol = symbol;
+      _period = period;
       return IsLargeCandle(bar);
    }
    

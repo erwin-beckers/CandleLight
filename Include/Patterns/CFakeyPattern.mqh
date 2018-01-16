@@ -15,13 +15,15 @@ private:
    
 public:
    //+------------------------------------------------------------------+
-   CFakeyPattern(int period) : CBasePatternDetector(period)
+   CFakeyPattern()
    {
    }
 
    //+------------------------------------------------------------------+
-   bool IsValid(int bar)
+   bool IsValid(string symbol,int period, int bar)
    {
+      _symbol = symbol;
+      _period = period;
       if (IsPinBar(bar+2)) return false;
       if (IsPinBar(bar+1)) return false;
       if (IsInsideBar(bar+1))
@@ -34,16 +36,16 @@ public:
             
             if (isUp2 != isUp1 && isUp0 == isUp2)
             {      
-               if (iLow(Symbol(), _period, bar) < iLow(Symbol(), _period, bar+2)) 
+               if (iLow(_symbol, _period, bar) < iLow(_symbol, _period, bar+2)) 
                {
-                  if (iHigh(Symbol(), _period, bar) < iHigh(Symbol(), _period, bar+1))
+                  if (iHigh(_symbol, _period, bar) < iHigh(_symbol, _period, bar+1))
                   {
                      return true;
                   }
                }
-               else if (iHigh(Symbol(), _period, bar) > iHigh(Symbol(), _period, bar+2))
+               else if (iHigh(_symbol, _period, bar) > iHigh(_symbol, _period, bar+2))
                {
-                  if (iLow(Symbol(), _period, bar) > iLow(Symbol(), _period, bar+1))
+                  if (iLow(_symbol, _period, bar) > iLow(_symbol, _period, bar+1))
                   {
                      return true;
                   }
@@ -58,13 +60,6 @@ public:
    string PatternName()
    {
       return "Fakey pattern";
-   }
-   
-   
-   //+------------------------------------------------------------------+
-   int BarCount()
-   {
-      return 3;
    }
 };
 

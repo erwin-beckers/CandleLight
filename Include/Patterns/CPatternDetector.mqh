@@ -11,14 +11,14 @@ input string __pinbar__                = "------ Candle stick patterns ------";
 input bool   DrawPinBars               = true;
 input bool   DrawInsideBars            = true;
 input bool   DrawDoubleBarReversal     = true;
-input bool   DrawTrippleBarReversal    = true;
+input bool   DrawTrippleBarReversal    = false;
 input bool   DrawReversalBars          = true;
 input bool   DrawFakey                 = true;
-input bool   DrawDoji                  = true;
+input bool   DrawDoji                  = false;
 input int    PipsMargin                = 5;
 
 input string __sizefilter__            = "------ Bar size filter ------"; 
-input bool   BarSizeFilterEnabled      = true;
+input bool   BarSizeFilterEnabled      = false;
 
 input string __hilofilter__            = "------ Swing hi/lo filter ------"; 
 input bool   SwingHiLoFilterEnabled    = true;
@@ -42,38 +42,40 @@ datetime _prevTime;
 #include <Patterns\CTrippleReversalPattern.mqh>;
 #include <Patterns\CReversalPattern.mqh>;
 #include <Patterns\IPatternDetector.mqh>;
+#include <Patterns\CDistributedSRFilter.mqh>;
 
 //+------------------------------------------------------------------+
 class CPatternDetector
 {
 private:
-   int                     _period;
    IPatternDetector*       _patterns[];
    int                     _patternCount;
    
    IPatternDetector*       _filters[];
    int                     _filterCount;
    
+   CDistributedSRFilter*   _srFilter;
+   
 public:   
    //+------------------------------------------------------------------+
-   CPatternDetector(int period)
+   CPatternDetector()
    {
-      _period       = 0;
       _patternCount = 0;
       _filterCount  = 0;
       
       ArrayResize(_patterns, 20);
-      if (DrawReversalBars) _patterns[_patternCount++] = new CReversalPattern(_period);
-      if (DrawTrippleBarReversal) _patterns[_patternCount++] = new CTrippleReversalPattern(_period, PipsMargin);
-      if (DrawDoubleBarReversal) _patterns[_patternCount++] = new CDoubleReversalPattern(_period, PipsMargin);
-      if (DrawPinBars) _patterns[_patternCount++] = new CPinbarPattern(_period);
-      if (DrawInsideBars) _patterns[_patternCount++] = new CInsideBarPattern(_period);
-      if (DrawDoji) _patterns[_patternCount++] = new CDojiPattern(_period);
+      _patterns[_patternCount++] = new CReversalPattern();
+      _patterns[_patternCount++] = new CTrippleReversalPattern(PipsMargin);
+      _patterns[_patternCount++] = new CDoubleReversalPattern(PipsMargin);
+      _patterns[_patternCount++] = new CPinbarPattern();
+      _patterns[_patternCount++] = new CInsideBarPattern();
+      _patterns[_patternCount++] = new CDojiPattern();
       
+      _srFilter = new CDistributedSRFilter(PipsFromSRMargin); 
       ArrayResize(_filters, 20);
-      if (BarSizeFilterEnabled) _filters[_filterCount++] = new CCandleSizeFilter(_period);
-      if (SwingHiLoFilterEnabled) _filters[_filterCount++] = new CSwingHiLoFilter(_period, SwingHighLowBars);
-      if (UseSRFilter) _filters[_filterCount++] = new CSRFilter(_period, PipsFromSRMargin);
+      if (BarSizeFilterEnabled) _filters[_filterCount++] = new CCandleSizeFilter();
+      if (SwingHiLoFilterEnabled) _filters[_filterCount++] = new CSwingHiLoFilter(SwingHighLowBars);
+      if (UseSRFilter) _filters[_filterCount++] = _srFilter;
    }
    
    //+------------------------------------------------------------------+
@@ -90,31 +92,38 @@ public:
          delete _filters[i];
       }
       ArrayFree (_filters);
+      
+      delete _srFilter;
    }
    
    //+------------------------------------------------------------------+
-   bool PassesFilter(int bar)
+   bool PassesFilter(string symbol, int period, int bar)
    {
       for (int i=0; i < _filterCount; ++i)
       {
-         if (! _filters[i].IsValid(bar)) return false;
+         if (! _filters[i].IsValid(symbol, period, bar)) return false;
       }
       return true;
    }
    
    //+------------------------------------------------------------------+
-   bool IsValidPattern(int bar, string& patternName, color& clr)
+   bool IsValidPattern(string symbol, int period, int bar, string& patternName)
    {
       for (int i=0; i < _patternCount; ++i)
       {
-         if ( _patterns[i].IsValid(bar) ) 
+         if ( _patterns[i].IsValid(symbol, period, bar) ) 
          {
             patternName = _patterns[i].PatternName();
-            clr         = _patterns[i].PatternColor();
             return true;
          }
       }
       return false;
+   }
+   
+   //+------------------------------------------------------------------+
+   void DrawSR()
+   {
+      _srFilter.Draw();
    }
 };
 

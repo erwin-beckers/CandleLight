@@ -16,30 +16,36 @@ private:
    
 public:
    //+------------------------------------------------------------------+
-   CTrippleReversalPattern(int period, int pipsMargin) : CBasePatternDetector(period)
+   CTrippleReversalPattern(int pipsMargin)
    {
       _pipsMargin = pipsMargin;
    }
 
    //+------------------------------------------------------------------+
-   bool IsValid(int bar)
+   bool IsValid(string symbol,int period, int bar)
    {
+      _symbol = symbol;
+      _period = period;
+      
+      double points   = MarketInfo(_symbol, MODE_POINT);
+      double digits   = MarketInfo(_symbol, MODE_DIGITS);
+      
       bool isUp1 = IsUp(bar);
       bool isUp2 = IsUp(bar+1);
       bool isUp3 = IsUp(bar+2);
       if (isUp1 == isUp2 && isUp2 != isUp3)
       {
          double mult = 1;
-         if (Digits ==3 || Digits==5) mult = 10;
-         double pips = _pipsMargin * mult * Point();
+         if (digits ==3 || digits==5) mult = 10;
+         double pips = _pipsMargin * mult * points;
          
          if (isUp3)
          {
-            if ( iLow(Symbol(), _period, bar) < iLow(Symbol(), _period, bar+2) && iHigh(Symbol(), _period, bar+1) + pips > iHigh(Symbol(), _period, bar+2)) return true;
+            if ( iLow(_symbol, _period, bar) < iLow(_symbol, _period, bar+2) && iHigh(_symbol, _period, bar+1) + pips > iHigh(_symbol, _period, bar+2)) return true;
          }
          else
          {
-            if ( iHigh(Symbol(), _period, bar)  > iHigh(Symbol(), _period, bar+2) && iLow(Symbol(), _period, bar) - pips < iLow(Symbol(), _period, bar+2)) return true;
+            if ( iHigh(_symbol, _period, bar)  > iHigh(_symbol, _period, bar+2) && iLow(_symbol, _period, bar) - pips < iLow(_symbol, _period, bar+2)) return true;
          }
       }
       return false;

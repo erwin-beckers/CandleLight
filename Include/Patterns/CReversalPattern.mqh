@@ -16,20 +16,22 @@ private:
    
 public:
    //+------------------------------------------------------------------+
-   CReversalPattern(int period) : CBasePatternDetector(period)
+   CReversalPattern()
    {
    }
 
    //+------------------------------------------------------------------+
-   bool IsValid(int bar)
+   bool IsValid(string symbol, int period, int bar)
    {
+      _symbol = symbol;
+      _period = period;
       if (IsUp(bar) && !IsUp(bar+1))
       {
-         double bodySize = MathAbs(iOpen(Symbol(), _period, bar+1) - iClose(Symbol(), _period, bar+1));
-         double half = iClose(Symbol(), _period, bar+1) + bodySize * 0.5;
-         if (iClose(Symbol(), _period, bar) > half)
+         double bodySize = MathAbs(iOpen(_symbol, _period, bar+1) - iClose(_symbol, _period, bar+1));
+         double half = iClose(_symbol, _period, bar+1) + bodySize * 0.5;
+         if (iClose(_symbol, _period, bar) > half)
          {
-            if (iLow(Symbol(), _period, bar) < iLow(Symbol(), _period, bar+1))
+            if (iLow(_symbol, _period, bar) < iLow(_symbol, _period, bar+1))
             {
                _patternName = "Bullish Reversal candle";
                return true;
@@ -38,11 +40,11 @@ public:
       }
       else if (!IsUp(bar) && IsUp(bar+1))
       {
-         double bodySize = MathAbs(iOpen(Symbol(), _period, bar+1) - iClose(Symbol(), _period, bar+1));
-         double half     = iClose(Symbol(), _period, bar+1) - bodySize * 0.5;
-         if (iClose(Symbol(), _period, bar) < half)
+         double bodySize = MathAbs(iOpen(_symbol, _period, bar+1) - iClose(_symbol, _period, bar+1));
+         double half     = iClose(_symbol, _period, bar+1) - bodySize * 0.5;
+         if (iClose(_symbol, _period, bar) < half)
          {
-            if (iHigh(Symbol(), _period, bar) > iHigh(Symbol(), _period, bar+1))
+            if (iHigh(_symbol, _period, bar) > iHigh(_symbol, _period, bar+1))
             {
                _patternName = "Bearish Reversal candle";
                return true;

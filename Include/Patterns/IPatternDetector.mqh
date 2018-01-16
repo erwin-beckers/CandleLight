@@ -9,10 +9,9 @@
 
 interface IPatternDetector
 {
-   bool   IsValid(int bar);
+   bool   IsValid(string symbol,int period, int bar);
    string PatternName();
    color  PatternColor();
    bool   IsBackground();
    int    BarCount();
-};
-
+};;

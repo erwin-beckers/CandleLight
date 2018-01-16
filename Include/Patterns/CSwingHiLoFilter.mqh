@@ -16,14 +16,16 @@ private:
    
 public:
    //+------------------------------------------------------------------+
-   CSwingHiLoFilter(int period, int swingHiLoBars) : CBasePatternDetector(period)
+   CSwingHiLoFilter(int swingHiLoBars)
    {
       _swingHiLoBars = swingHiLoBars;
    }
 
    //+------------------------------------------------------------------+
-   bool IsValid(int bar)
+   bool IsValid(string symbol, int period, int bar)
    {
+      _symbol = symbol;
+      _period = period;
       int space = SpaceLeft(bar);
       return space >= _swingHiLoBars;
    }

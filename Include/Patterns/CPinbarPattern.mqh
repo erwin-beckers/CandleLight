@@ -12,21 +12,22 @@
 class CPinbarPattern : public CBasePatternDetector
 {
 private: 
-   string _patternName;
    
 public:
    //+------------------------------------------------------------------+
-   CPinbarPattern(int period) : CBasePatternDetector(period)
+   CPinbarPattern()
    {
    }
 
    //+------------------------------------------------------------------+
-   bool IsValid(int bar)
+   bool IsValid(string symbol, int period, int bar)
    {
-      double body      = MathAbs(iClose(Symbol(), _period, bar) - iOpen(Symbol(), _period, bar));
+      _symbol = symbol;
+      _period = period;
+      double body      = MathAbs(iClose(_symbol, _period, bar) - iOpen(_symbol, _period, bar));
       double lowerWick = LowerWick(bar);
       double upperWick = UpperWick(bar);
-      double range     = iHigh(Symbol(), _period, bar) - iLow(Symbol(), _period, bar);
+      double range     = iHigh(_symbol, _period, bar) - iLow(_symbol, _period, bar);
       double tail      = MathMax(lowerWick, upperWick);
       double nose      = MathMin(lowerWick, upperWick); 
       // The body of a pin bar must be no more than 20% of the measurement of the body to the tip of the wick
@@ -37,10 +38,6 @@ public:
       {
         if (tail > 2 * nose)
          {
-            if ( IsUp(bar)) 
-               _patternName = "Bullish pinbar";
-            else
-               _patternName = "Bearish pinbar";
             return true;
          }
       }
@@ -50,7 +47,7 @@ public:
    //+------------------------------------------------------------------+
    string PatternName()
    {
-      return _patternName;
+      return "Pinbar pattern";
    }
 };
 

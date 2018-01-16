@@ -15,15 +15,17 @@ private:
    
 public:
    //+------------------------------------------------------------------+
-   CInsideBarPattern(int period) : CBasePatternDetector(period)
+   CInsideBarPattern()
    {
    }
 
    //+------------------------------------------------------------------+
-   bool IsValid(int bar)
+   bool IsValid(string symbol,int period, int bar)
    {
-     return (iLow (Symbol(), _period, bar+1) < iLow (Symbol(), _period, bar) && 
-             iHigh(Symbol(), _period, bar+1) > iHigh(Symbol(), _period, bar));
+      _symbol = symbol;
+      _period = period;
+     return (iLow (_symbol, _period, bar+1) < iLow (_symbol, _period, bar) && 
+             iHigh(_symbol, _period, bar+1) > iHigh(_symbol, _period, bar));
 
    }
    
@@ -31,12 +33,6 @@ public:
    string PatternName()
    {
       return "Inside bar pattern";
-   }
-   
-   //+------------------------------------------------------------------+
-   color PatternColor()
-   {
-      return clrChartreuse;
    }
 };
 
