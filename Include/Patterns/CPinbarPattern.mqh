@@ -12,6 +12,7 @@
 class CPinbarPattern : public CBasePatternDetector
 {
 private: 
+   string _patternName;
    
 public:
    //+------------------------------------------------------------------+
@@ -36,6 +37,10 @@ public:
       {
         if (tail > 2 * nose)
          {
+            if ( IsUp(bar)) 
+               _patternName = "Bullish pinbar";
+            else
+               _patternName = "Bearish pinbar";
             return true;
          }
       }
@@ -45,7 +50,7 @@ public:
    //+------------------------------------------------------------------+
    string PatternName()
    {
-      return "Pinbar pattern";
+      return _patternName;
    }
 };
 

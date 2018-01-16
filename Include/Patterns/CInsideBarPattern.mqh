@@ -32,5 +32,11 @@ public:
    {
       return "Inside bar pattern";
    }
+   
+   //+------------------------------------------------------------------+
+   color PatternColor()
+   {
+      return clrChartreuse;
+   }
 };
 

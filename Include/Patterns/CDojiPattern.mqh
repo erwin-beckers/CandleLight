@@ -44,5 +44,11 @@ public:
    {
       return "Doji pattern";
    }
+   
+   //+------------------------------------------------------------------+
+   color PatternColor()
+   {
+      return clrChartreuse;
+   }
 };
 

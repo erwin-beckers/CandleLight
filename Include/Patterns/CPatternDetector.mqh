@@ -11,14 +11,14 @@ input string __pinbar__                = "------ Candle stick patterns ------";
 input bool   DrawPinBars               = true;
 input bool   DrawInsideBars            = true;
 input bool   DrawDoubleBarReversal     = true;
-input bool   DrawTrippleBarReversal    = false;
+input bool   DrawTrippleBarReversal    = true;
 input bool   DrawReversalBars          = true;
 input bool   DrawFakey                 = true;
-input bool   DrawDoji                  = false;
+input bool   DrawDoji                  = true;
 input int    PipsMargin                = 5;
 
 input string __sizefilter__            = "------ Bar size filter ------"; 
-input bool   BarSizeFilterEnabled      = false;
+input bool   BarSizeFilterEnabled      = true;
 
 input string __hilofilter__            = "------ Swing hi/lo filter ------"; 
 input bool   SwingHiLoFilterEnabled    = true;
@@ -63,12 +63,12 @@ public:
       _filterCount  = 0;
       
       ArrayResize(_patterns, 20);
-      _patterns[_patternCount++] = new CReversalPattern(_period);
-      _patterns[_patternCount++] = new CTrippleReversalPattern(_period, PipsMargin);
-      _patterns[_patternCount++] = new CDoubleReversalPattern(_period, PipsMargin);
-      _patterns[_patternCount++] = new CPinbarPattern(_period);
-      _patterns[_patternCount++] = new CInsideBarPattern(_period);
-      _patterns[_patternCount++] = new CDojiPattern(_period);
+      if (DrawReversalBars) _patterns[_patternCount++] = new CReversalPattern(_period);
+      if (DrawTrippleBarReversal) _patterns[_patternCount++] = new CTrippleReversalPattern(_period, PipsMargin);
+      if (DrawDoubleBarReversal) _patterns[_patternCount++] = new CDoubleReversalPattern(_period, PipsMargin);
+      if (DrawPinBars) _patterns[_patternCount++] = new CPinbarPattern(_period);
+      if (DrawInsideBars) _patterns[_patternCount++] = new CInsideBarPattern(_period);
+      if (DrawDoji) _patterns[_patternCount++] = new CDojiPattern(_period);
       
       ArrayResize(_filters, 20);
       if (BarSizeFilterEnabled) _filters[_filterCount++] = new CCandleSizeFilter(_period);
@@ -103,13 +103,14 @@ public:
    }
    
    //+------------------------------------------------------------------+
-   bool IsValidPattern(int bar, string& patternName)
+   bool IsValidPattern(int bar, string& patternName, color& clr)
    {
       for (int i=0; i < _patternCount; ++i)
       {
          if ( _patterns[i].IsValid(bar) ) 
          {
             patternName = _patterns[i].PatternName();
+            clr         = _patterns[i].PatternColor();
             return true;
          }
       }

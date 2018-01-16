@@ -34,6 +34,13 @@ protected:
    }
    
    //+------------------------------------------------------------------+
+   double CandleRange(int bar)
+   {
+      return MathAbs(iClose(Symbol(), _period, bar) - iOpen(Symbol(), _period, bar));
+   }
+   
+   
+   //+------------------------------------------------------------------+
    int SpaceLeft(int bar)
    {
      double lowerWick = LowerWick(bar);
@@ -59,13 +66,13 @@ protected:
    //+------------------------------------------------------------------+
    bool IsLargeCandle(int bar)
    {
-      double body = MathAbs(iClose(Symbol(), _period, bar) - iOpen(Symbol(), _period, bar));
+      double body = CandleRange(bar);
       
       double cnt     = 0;
       double barSize = 0;
-      for (int i=1; i < 30;++i)
+      for (int i=1; i < 100;++i)
       {
-         barSize += MathAbs(iClose(Symbol(), _period, bar+1) - iOpen(Symbol(), _period, bar+1));
+         barSize += CandleRange(bar+i);
          cnt++;
       }
       double avgBarSize = barSize / cnt;
@@ -89,5 +96,23 @@ public:
    virtual string PatternName()
    {
       return "";
+   }
+   
+   //+------------------------------------------------------------------+
+   virtual color PatternColor()
+   {
+      return Yellow;
+   }
+   
+   //+------------------------------------------------------------------+
+   virtual bool IsBackground()
+   {
+      return false;
+   }
+   
+   //+------------------------------------------------------------------+
+   virtual int BarCount()
+   {
+      return 1;
    }
 };

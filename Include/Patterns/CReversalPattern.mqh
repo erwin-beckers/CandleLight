@@ -12,6 +12,7 @@
 class CReversalPattern : public CBasePatternDetector
 {
 private: 
+   string _patternName;
    
 public:
    //+------------------------------------------------------------------+
@@ -30,6 +31,7 @@ public:
          {
             if (iLow(Symbol(), _period, bar) < iLow(Symbol(), _period, bar+1))
             {
+               _patternName = "Bullish Reversal candle";
                return true;
             }
          }
@@ -42,6 +44,7 @@ public:
          {
             if (iHigh(Symbol(), _period, bar) > iHigh(Symbol(), _period, bar+1))
             {
+               _patternName = "Bearish Reversal candle";
                return true;
             }
          }
@@ -52,7 +55,14 @@ public:
    //+------------------------------------------------------------------+
    string PatternName()
    {
-      return "Reversal bar pattern";
+      return _patternName;
+   }
+   
+   
+   //+------------------------------------------------------------------+
+   int BarCount()
+   {
+      return 2;
    }
 };
 

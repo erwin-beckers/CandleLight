@@ -11,5 +11,8 @@ interface IPatternDetector
 {
    bool   IsValid(int bar);
    string PatternName();
+   color  PatternColor();
+   bool   IsBackground();
+   int    BarCount();
 };
 
