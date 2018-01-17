@@ -11,7 +11,6 @@
 input string __history__    = "------ History ------"; 
 input int    MaxBarsHistory = 100;
 
-
 #include <Patterns\CPatternDetector.mqh>; 
 
 CPatternDetector* _detector;

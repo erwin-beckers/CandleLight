@@ -22,6 +22,15 @@ private:
    int            _levelCountD1;
    
    //----------------------------------------------------------------------
+   bool IsKnownSymbol()
+   {
+     string availableSymbols = "asx200 audcad audchf audjpy audnzd audusd btcusd cadchf cadjpy chfjpy ethusd euraud eurcad eurchf eurgbp eurjpy eurnzd eurusd gbpaud gbpcad gbpchf gbpjpy gbpnzd  gbpusd nzdcad nzdchf nzdjpy nzdusd ukousd us500 usdcad usdchf usdjpy usdollar usdsgd usousd ws30 xagusd xauusd";
+     string symLower = _symbol;
+     StringToLower(symLower);
+     return StringFind(availableSymbols, symLower) >=0;
+   }
+   
+   //----------------------------------------------------------------------
    void Clear()
    {
       bool deleted = false;
@@ -48,6 +57,8 @@ private:
       _levelCountD1 = 0;
       string key    = _symbol;
       StringToLower(key);
+      
+      if (!IsKnownSymbol()) return;
       
       string url    = "https://www.erwinbeckers.nl/sr/" + key + ".txt";
       string httpResult = "";
