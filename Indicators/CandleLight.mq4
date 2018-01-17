@@ -203,8 +203,8 @@ int init()
    ChartSetInteger( ChartID(), CHART_COLOR_GRID,        clrDarkGray);
    ChartSetInteger( ChartID(), CHART_COLOR_CHART_DOWN,  clrBlack);
    ChartSetInteger( ChartID(), CHART_COLOR_CHART_UP,    clrBlack);
-   ChartSetInteger( ChartID(), CHART_COLOR_CANDLE_BEAR, clrBlue);
-   ChartSetInteger( ChartID(), CHART_COLOR_CANDLE_BULL, clrRed);
+   ChartSetInteger( ChartID(), CHART_COLOR_CANDLE_BEAR, clrRed);
+   ChartSetInteger( ChartID(), CHART_COLOR_CANDLE_BULL, clrBlue);
    
    _prevTime  = 0;
    _refresh   = true;
