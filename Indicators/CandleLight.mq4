@@ -8,7 +8,6 @@
 #property version   "1.00"
 #property strict
 #property indicator_chart_window
-
 input string __history__    = "------ History ------"; 
 input int    MaxBarsHistory = 100;
 
@@ -71,7 +70,7 @@ void DrawBar(int bar)
    ObjectSetInteger(0,key,OBJPROP_BACK,false);
    
    ObjectSetInteger(0,key,OBJPROP_STYLE,STYLE_SOLID);
-   ObjectSetInteger(0,key,OBJPROP_WIDTH,1);
+   ObjectSetInteger(0,key,OBJPROP_WIDTH,2);
    ObjectSetInteger(0,key,OBJPROP_SELECTABLE,false);
    ObjectSetInteger(0,key,OBJPROP_SELECTED,false);
 }
@@ -79,6 +78,7 @@ void DrawBar(int bar)
 //+------------------------------------------------------------------+
 int start()
 {  
+   
    int secondsleft = Time[0]+Period()*60-TimeCurrent();//-timeshiftsec;
    int d,h,m,s;
    s=secondsleft%60;
@@ -196,6 +196,16 @@ void OnTimer()
 //+------------------------------------------------------------------+
 int init()
 {   
+
+   ChartSetInteger( ChartID(), CHART_COLOR_BACKGROUND,  clrLightGray);
+   ChartSetInteger( ChartID(), CHART_COLOR_FOREGROUND,  clrBlack);
+   ChartSetInteger( ChartID(), CHART_COLOR_BACKGROUND,  clrLightGray);
+   ChartSetInteger( ChartID(), CHART_COLOR_GRID,        clrDarkGray);
+   ChartSetInteger( ChartID(), CHART_COLOR_CHART_DOWN,  clrBlack);
+   ChartSetInteger( ChartID(), CHART_COLOR_CHART_UP,    clrBlack);
+   ChartSetInteger( ChartID(), CHART_COLOR_CANDLE_BEAR, clrBlue);
+   ChartSetInteger( ChartID(), CHART_COLOR_CANDLE_BULL, clrRed);
+   
    _prevTime  = 0;
    _refresh   = true;
    _detector = new CPatternDetector();

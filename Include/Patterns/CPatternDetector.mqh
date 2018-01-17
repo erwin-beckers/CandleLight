@@ -25,7 +25,7 @@ input bool   SwingHiLoFilterEnabled    = true;
 input int    SwingHighLowBars          = 5;
 
 input string __srfilter__              = "------ Support/Resistance filter ------"; 
-input bool   UseSRFilter               = false;
+input bool   UseSRFilter               = true;
 input int    PipsFromSRMargin          = 10;
 
 bool     refresh=false;

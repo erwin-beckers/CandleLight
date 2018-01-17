@@ -23,7 +23,18 @@ public:
    {
       _symbol = symbol;
       _period = period;
-      return IsLargeCandle(bar);
+      
+      double body = CandleRange(bar);
+      
+      double cnt     = 0;
+      double barSize = 0;
+      for (int i=1; i < 100;++i)
+      {
+         barSize += CandleRange(bar+i);
+         cnt++;
+      }
+      double avgBarSize = barSize / cnt;
+      return (body >= (avgBarSize * 0.4));
    }
    
    //+------------------------------------------------------------------+
