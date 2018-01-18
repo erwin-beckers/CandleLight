@@ -27,6 +27,8 @@ public:
    //+------------------------------------------------------------------+
    bool IsAtSRLevel(int period, int bar, int pips)
    {
+      if (!_srLevels.HasLevels()) return true;
+      
       double points   = MarketInfo(_symbol, MODE_POINT);
       double digits   = MarketInfo(_symbol, MODE_DIGITS);
       

@@ -100,6 +100,12 @@ private:
    
 public:
    //----------------------------------------------------------------------
+   bool HasLevels()
+   {
+      return _levelCountW1 >0 || _levelCountD1 > 0;
+   }
+
+   //----------------------------------------------------------------------
    void DrawSR()
    {
       //Print(_symbol, "sr: draw w:",_levelCountW1," d:",_levelCountD1);

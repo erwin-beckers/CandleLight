@@ -62,7 +62,7 @@ void DrawBar(int bar)
    bool isValid = _detector.IsValidPattern(Symbol(), 0, bar, patternName);
    if (!isValid) return;
    
-   key =key + " " + TimeToStr( Time[bar], TIME_DATE | TIME_MINUTES); 
+   key =patternName + " " + TimeToStr( Time[bar], TIME_DATE | TIME_MINUTES); 
    key =key + " " + IntegerToString(bar) + "_" ;
    ObjectCreate(0,key,OBJ_RECTANGLE,0, Time[bar], Low[bar],  Time[bar] ,High[bar]);
    ObjectSetInteger(0,key,OBJPROP_COLOR,Yellow);
