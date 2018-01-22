@@ -14,6 +14,7 @@ class CSRFilter : public CBasePatternDetector
 {
 private:
    double _pips;
+   
 public:
    //+------------------------------------------------------------------+
    CSRFilter(int pips)

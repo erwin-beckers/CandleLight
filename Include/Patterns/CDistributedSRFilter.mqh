@@ -25,10 +25,14 @@ public:
    }
    
    //+------------------------------------------------------------------+
-   bool IsAtSRLevel(int period, int bar, int pips)
+   ~CSRPair()
    {
-      if (!_srLevels.HasLevels()) return true;
-      
+      delete _srLevels;
+   }
+   
+   //+------------------------------------------------------------------+
+   bool IsAtSRLevel(int period, int bar, int pips)
+   {      
       double points   = MarketInfo(_symbol, MODE_POINT);
       double digits   = MarketInfo(_symbol, MODE_DIGITS);
       
@@ -36,7 +40,9 @@ public:
       if (digits ==3 || digits==5) mult = 10;
       double distance = pips * mult * points;
       
-      return _srLevels.IsLevelAt(period, bar, distance);
+      bool result = _srLevels.IsLevelAt(period, bar, distance);
+      if (!_srLevels.HasLevels()) return true;
+      return result;
    }
    
    //+------------------------------------------------------------------+

@@ -58,7 +58,11 @@ private:
       string key    = _symbol;
       StringToLower(key);
       
-      if (!IsKnownSymbol()) return;
+      if (!IsKnownSymbol()) 
+      {
+         Print("UNKNOWN symbol:" + _symbol);
+         return;
+      }
       
       string url    = "https://www.erwinbeckers.nl/sr/" + key + ".txt";
       string httpResult = "";
@@ -66,6 +70,8 @@ private:
       //if (Symbol() == _symbol) Print(Symbol(), " grab:", url);
       if (!_http.GrabWeb(url, httpResult))
       {
+      
+         Print("download failed for:" + url);
          // maybe there is no network connection ?
          return;
       }
