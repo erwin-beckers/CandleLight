@@ -1,4 +1,7 @@
-# CandleLight - An indicator for Multi currency & multi timeframe candle stick pattern recognition
+# CandleLight 
+### An indicator for Multi currency & multi timeframe candle stick pattern recognition
+
+
 Candle light is a MT indicator which scans all currencies for candle stick patterns and gives alerts when found
 
 - scans all currencies 24/7 for patterns
