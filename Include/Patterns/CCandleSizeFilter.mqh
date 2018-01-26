@@ -24,13 +24,13 @@ public:
       _symbol = symbol;
       _period = period;
       
-      double body = CandleRange(bar);
+      double body = GetCandleBodySize(bar);
       
       double cnt     = 0;
       double barSize = 0;
       for (int i=1; i < 100;++i)
       {
-         barSize += CandleRange(bar+i);
+         barSize += GetCandleBodySize(bar+i);
          cnt++;
       }
       double avgBarSize = barSize / cnt;

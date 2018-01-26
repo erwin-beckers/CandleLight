@@ -24,6 +24,7 @@ public:
    {
       _symbol = symbol;
       _period = period;
+      /*
       double body      = MathAbs(iClose(_symbol, _period, bar) - iOpen(_symbol, _period, bar));
       double lowerWick = LowerWick(bar);
       double upperWick = UpperWick(bar);
@@ -37,8 +38,14 @@ public:
          {
             return true;
          }
-      }
-      return false;
+      }*/
+      
+      // body is less then 5% of entire candle
+      double bodySize = GetCandleBodySize(bar);
+      double candleRange = GetCandleRangeSize(bar);
+      double percentage = (bodySize / candleRange) * 100.0;
+      return percentage <= 15;
+      
    }
    
    //+------------------------------------------------------------------+

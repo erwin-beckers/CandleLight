@@ -64,12 +64,12 @@ public:
       _filterCount  = 0;
       
       ArrayResize(_patterns, 20);
-      _patterns[_patternCount++] = new CReversalPattern();
-      _patterns[_patternCount++] = new CTrippleReversalPattern(PipsMargin);
-      _patterns[_patternCount++] = new CDoubleReversalPattern(PipsMargin);
-      _patterns[_patternCount++] = new CPinbarPattern();
-      _patterns[_patternCount++] = new CInsideBarPattern();
-      _patterns[_patternCount++] = new CDojiPattern();
+      if (DrawReversalBars) _patterns[_patternCount++] = new CReversalPattern();
+      if (DrawTrippleBarReversal) _patterns[_patternCount++] = new CTrippleReversalPattern(PipsMargin);
+      if (DrawDoubleBarReversal) _patterns[_patternCount++] = new CDoubleReversalPattern();
+      if (DrawPinBars) _patterns[_patternCount++] = new CPinbarPattern();
+      if (DrawInsideBars) _patterns[_patternCount++] = new CInsideBarPattern();
+      if (DrawDoji) _patterns[_patternCount++] = new CDojiPattern();
       
       _srFilter = new CDistributedSRFilter(PipsFromSRMargin); 
       ArrayResize(_filters, 20);

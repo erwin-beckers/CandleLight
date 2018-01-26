@@ -35,7 +35,13 @@ protected:
    }
    
    //+------------------------------------------------------------------+
-   double CandleRange(int bar)
+   double GetCandleRangeSize(int bar)
+   {
+      return MathAbs(iHigh(_symbol, _period, bar) - iLow(_symbol, _period, bar));
+   }
+   
+   //+------------------------------------------------------------------+
+   double GetCandleBodySize(int bar)
    {
       return MathAbs(iClose(_symbol, _period, bar) - iOpen(_symbol, _period, bar));
    }
@@ -67,13 +73,13 @@ protected:
    //+------------------------------------------------------------------+
    bool IsLargeCandle(int bar)
    {
-      double body = CandleRange(bar);
+      double body = GetCandleBodySize(bar);
       
       double cnt     = 0;
       double barSize = 0;
       for (int i=1; i < 100;++i)
       {
-         barSize += CandleRange(bar+i);
+         barSize += GetCandleBodySize(bar+i);
          cnt++;
       }
       double avgBarSize = barSize / cnt;

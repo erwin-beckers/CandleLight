@@ -21,6 +21,7 @@ public:
    }
 
    //+------------------------------------------------------------------+
+   //
    bool IsValid(string symbol, int period, int bar)
    {
       _symbol = symbol;
