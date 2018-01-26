@@ -13,4 +13,6 @@ Candle light is a MT indicator which scans all currencies for candle stick patte
 - has a swing hi/lo filter which filters out all signals which are not creating a new swing hi/lo
 - has a candle size filter which filters out signals on small candles
 
+- draws signals on/for the current open chart
+
 
